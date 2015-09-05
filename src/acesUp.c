@@ -22,7 +22,7 @@ Faces: {'A','2','3','4','5','6','7','8','9','X','J','Q','K'}
 0 = Ace of spades
 13 = Ace of Diamonds
 
-Calc card: 
+Calc card:
 Color = number/13
 Value = number%13
 
@@ -56,7 +56,7 @@ static bool higher_value(int card_1, int card_2){
 static bool valid_move(pointer_location pointer){
   int cur_card = 0;
   switch(pointer){
-    case DECK :      
+    case DECK :
       return false;
     case CARD_1 :
       cur_card = 0;
@@ -68,7 +68,7 @@ static bool valid_move(pointer_location pointer){
       cur_card = 2;
       break;
     case CARD_4 :
-      cur_card = 3;     
+      cur_card = 3;
       break;
   }
   if (card_top[cur_card] == -1){
@@ -81,28 +81,28 @@ static bool valid_move(pointer_location pointer){
       if (higher_value(table[cur_card][card_top[cur_card]], table[i][card_top[i]])){
         return true;
       }
-    }    
-  }  
+    }
+  }
   return false;
-}  
+}
 
 static bool remove_card(pointer_location pointer){
   if (valid_move(pointer)){
     switch(pointer){
-      case DECK :      
-        break;      
+      case DECK :
+        break;
       case CARD_1 :
-        if (card_top[0] != -1) { card_top[0]--; } 
+        if (card_top[0] != -1) { card_top[0]--; }
         break;
       case CARD_2 :
-        if (card_top[1] != -1) { card_top[1]--; } 
+        if (card_top[1] != -1) { card_top[1]--; }
         break;
       case CARD_3 :
-        if (card_top[2] != -1) { card_top[2]--; } 
+        if (card_top[2] != -1) { card_top[2]--; }
         break;
       case CARD_4 :
-        if (card_top[3] != -1) { card_top[3]--; } 
-        break;    
+        if (card_top[3] != -1) { card_top[3]--; }
+        break;
     }
     return true;
   }
@@ -116,7 +116,7 @@ static bool free_slot(){
 static void select_card(){
   int cur_card = 0;
   switch(pointer){
-    case DECK :      
+    case DECK :
       break;
     case CARD_1 :
       cur_card = 0;
@@ -128,19 +128,20 @@ static void select_card(){
       cur_card = 2;
       break;
     case CARD_4 :
-      cur_card = 3;     
+      cur_card = 3;
       break;
   }
   if(card_top[cur_card] != -1 && selected == -1 && free_slot()){
-    selected = cur_card;    
+    selected = cur_card;
   }
   else{
     selected = -1;
   }
 }
+
 static void move_card(){
   if(selected != -1){
-    
+
     switch(pointer){
       case DECK :
         break;
@@ -170,9 +171,9 @@ static void move_card(){
           card_top[3]++;
           table[3][card_top[3]] = table[selected][card_top[selected]];
           card_top[selected]--;
-        }     
+        }
         break;
-    }    
+    }
   }
 }
 
@@ -181,13 +182,13 @@ static void check_win_condition(){
   if (top_card_index == 52 && card_top[0] == 0 && card_top[1] == 0 && card_top[2] == 0 && card_top[3] == 0 && !won_round){
     if (!won_once){
           won_once = true;
-          high_score = 1; 
+          high_score = 1;
           won_round = true;
     }
     else{
       high_score++;
       won_round = true;
-    }    
+    }
   }
   else if (cards_left < high_score && !won_once){
     high_score = cards_left;
@@ -196,7 +197,7 @@ static void check_win_condition(){
 
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   if(pointer == DECK){
-    if (top_card_index != 52){ 
+    if (top_card_index != 52){
       deal();
     }
     else{
@@ -227,7 +228,7 @@ static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
       break;
     case CARD_4 :
       pointer = CARD_3;
-      break;    
+      break;
   }
   layer_mark_dirty(layer);
 }
@@ -248,7 +249,7 @@ static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
       break;
     case CARD_4 :
       pointer = DECK;
-      break;    
+      break;
   }
   layer_mark_dirty(layer);
 }
@@ -260,7 +261,7 @@ static void click_config_provider(void *context) {
 }
 
 static GBitmap* card_image_from_index(int card_index){
-  int color = card_index/13; 
+  int color = card_index/13;
   int value = card_index % 13;
   switch(color){
     case 0 :
@@ -273,7 +274,7 @@ static GBitmap* card_image_from_index(int card_index){
       return clubs_image[value];
     default :
       return NULL;
-  }  
+  }
 }
 
 static void layer_update_callback(Layer* this_layer, GContext* ctx){
@@ -284,7 +285,7 @@ static void layer_update_callback(Layer* this_layer, GContext* ctx){
   int card_space = 2;
   int deck_xpos = 5;
   int deck_ypos = 15;
-  
+
   //Draw background
   #ifdef PBL_COLOR
       graphics_context_set_fill_color(ctx, GColorIslamicGreen);
@@ -292,7 +293,7 @@ static void layer_update_callback(Layer* this_layer, GContext* ctx){
       graphics_context_set_fill_color(ctx, GColorWhite);
   #endif
   graphics_fill_rect(ctx, (GRect) { .origin = { 0, 0 }, .size = { 144, 168 }}, 0, GCornerNone);
-  
+
   //Draw deck
   if (top_card_index != 52){
     graphics_draw_bitmap_in_rect(ctx, card_back_image, GRect(deck_xpos,deck_ypos,card_width,card_height));
@@ -303,16 +304,16 @@ static void layer_update_callback(Layer* this_layer, GContext* ctx){
     #elif PBL_BW
       graphics_context_set_text_color(ctx, GColorBlack);
     #endif
-    graphics_draw_text(ctx, "RESTART" , fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD), GRect(0,deck_ypos-5,60,card_height), GTextOverflowModeWordWrap, GTextAlignmentLeft, NULL); 
+    graphics_draw_text(ctx, "RESTART" , fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD), GRect(0,deck_ypos-5,60,card_height), GTextOverflowModeWordWrap, GTextAlignmentLeft, NULL);
   }
-  
+
   //Draw cards
   int i;
   int k;
   int y_space = 10;
   for(i = 0; i < 4; ++i){
     if(card_top[i] == -1){
-      graphics_fill_rect(ctx, GRect(card_1_xpos + i*(card_width + card_space), card_1_ypos, card_width, card_height), 0, GCornerNone); 
+      graphics_fill_rect(ctx, GRect(card_1_xpos + i*(card_width + card_space), card_1_ypos, card_width, card_height), 0, GCornerNone);
     }
     else{
       int cnt = 0;
@@ -321,14 +322,14 @@ static void layer_update_callback(Layer* this_layer, GContext* ctx){
         max_cards = 4;
       #elif PBL_BW
         max_cards = 2;
-      #endif      
+      #endif
       for(k = ((card_top[i] > max_cards ) ? (card_top[i]-max_cards): 0); k <= card_top[i]; ++k){
-        graphics_draw_bitmap_in_rect(ctx, card_image_from_index(table[i][k]), GRect(card_1_xpos + i*(card_width + card_space), card_1_ypos+cnt*(y_space), card_width, card_height));     
+        graphics_draw_bitmap_in_rect(ctx, card_image_from_index(table[i][k]), GRect(card_1_xpos + i*(card_width + card_space), card_1_ypos+cnt*(y_space), card_width, card_height));
         cnt++;
-      }      
+      }
     }
   }
-  
+
   //Draw pointer
   switch(pointer){
     case DECK :
@@ -345,15 +346,15 @@ static void layer_update_callback(Layer* this_layer, GContext* ctx){
       break;
     case CARD_4 :
       graphics_draw_bitmap_in_rect(ctx, pointer_image, GRect(card_1_xpos + 3*(card_width + card_space)+10, card_1_ypos-11, 12, 10));
-      break;   
+      break;
   }
   //Draw select marker
   if (selected != -1){
     graphics_draw_bitmap_in_rect(ctx, pointer_image, GRect(card_1_xpos + selected*(card_width + card_space)-2, card_1_ypos-11, 12, 10));
     graphics_draw_bitmap_in_rect(ctx, pointer_image, GRect(card_1_xpos + selected*(card_width + card_space)+10, card_1_ypos-11, 12, 10));
     graphics_draw_bitmap_in_rect(ctx, pointer_image, GRect(card_1_xpos + selected*(card_width + card_space)+22, card_1_ypos-11, 12, 10));
-  }  
-  
+  }
+
   //Draw score
   graphics_context_set_text_color(ctx, GColorBlack);
   int cards_left = 0;
@@ -368,12 +369,12 @@ static void layer_update_callback(Layer* this_layer, GContext* ctx){
   else{
     snprintf(high_score_str, 20, "Best round: %i", high_score);
   }
-  graphics_draw_text(ctx, high_score_str, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD), (GRect) {.origin = {0, 20}, .size={144,14}}, GTextOverflowModeWordWrap, GTextAlignmentRight, NULL);  
+  graphics_draw_text(ctx, high_score_str, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD), (GRect) {.origin = {0, 20}, .size={144,14}}, GTextOverflowModeWordWrap, GTextAlignmentRight, NULL);
 
   //Win message
   if (won_round){
     graphics_context_set_text_color(ctx, GColorBlack);
-    graphics_draw_text(ctx, "Good job!", fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD), (GRect) {.origin = {0, 125}, .size={144,30}}, GTextOverflowModeWordWrap, GTextAlignmentCenter, NULL);  
+    graphics_draw_text(ctx, "Good job!", fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD), (GRect) {.origin = {0, 125}, .size={144,30}}, GTextOverflowModeWordWrap, GTextAlignmentCenter, NULL);
   }
 
 }
@@ -381,12 +382,13 @@ static void layer_update_callback(Layer* this_layer, GContext* ctx){
 static int rnd(int max){
   return rand() % max;
 }
+
 static void shuffle_deck(){
         int i;
         int j;
         int k;
 
-        //Generate deck       
+        //Generate deck
         for (i = 0; i < 52; ++i) {
                 deck[i] = i;
         }
@@ -426,7 +428,7 @@ static void load_images(){
   spades_image[10] = gbitmap_create_with_resource(RESOURCE_ID_JACK_OF_SPADES);
   spades_image[11] = gbitmap_create_with_resource(RESOURCE_ID_QUEEN_OF_SPADES);
   spades_image[12] = gbitmap_create_with_resource(RESOURCE_ID_KING_OF_SPADES);
-  
+
   diamonds_image[0] = gbitmap_create_with_resource(RESOURCE_ID_ACE_OF_DIAMONDS);
   diamonds_image[1] = gbitmap_create_with_resource(RESOURCE_ID_2_OF_DIAMONDS);
   diamonds_image[2] = gbitmap_create_with_resource(RESOURCE_ID_3_OF_DIAMONDS);
@@ -440,7 +442,7 @@ static void load_images(){
   diamonds_image[10] = gbitmap_create_with_resource(RESOURCE_ID_JACK_OF_DIAMONDS);
   diamonds_image[11] = gbitmap_create_with_resource(RESOURCE_ID_QUEEN_OF_DIAMONDS);
   diamonds_image[12] = gbitmap_create_with_resource(RESOURCE_ID_KING_OF_DIAMONDS);
-  
+
   hearts_image[0] = gbitmap_create_with_resource(RESOURCE_ID_ACE_OF_HEARTS);
   hearts_image[1] = gbitmap_create_with_resource(RESOURCE_ID_2_OF_HEARTS);
   hearts_image[2] = gbitmap_create_with_resource(RESOURCE_ID_3_OF_HEARTS);
@@ -454,7 +456,7 @@ static void load_images(){
   hearts_image[10] = gbitmap_create_with_resource(RESOURCE_ID_JACK_OF_HEARTS);
   hearts_image[11] = gbitmap_create_with_resource(RESOURCE_ID_QUEEN_OF_HEARTS);
   hearts_image[12] = gbitmap_create_with_resource(RESOURCE_ID_KING_OF_HEARTS);
-  
+
   clubs_image[0] = gbitmap_create_with_resource(RESOURCE_ID_ACE_OF_CLUBS);
   clubs_image[1] = gbitmap_create_with_resource(RESOURCE_ID_2_OF_CLUBS);
   clubs_image[2] = gbitmap_create_with_resource(RESOURCE_ID_3_OF_CLUBS);
@@ -468,9 +470,9 @@ static void load_images(){
   clubs_image[10] = gbitmap_create_with_resource(RESOURCE_ID_JACK_OF_CLUBS);
   clubs_image[11] = gbitmap_create_with_resource(RESOURCE_ID_QUEEN_OF_CLUBS);
   clubs_image[12] = gbitmap_create_with_resource(RESOURCE_ID_KING_OF_CLUBS);
-  
+
   card_back_image = gbitmap_create_with_resource(RESOURCE_ID_CARD_BACK);
-  pointer_image = gbitmap_create_with_resource(RESOURCE_ID_POINTER);  
+  pointer_image = gbitmap_create_with_resource(RESOURCE_ID_POINTER);
 }
 
 static void clear_table(){
@@ -483,7 +485,7 @@ static void clear_table(){
   }
 }
 
-static void deal(){  
+static void deal(){
   card_top[0]++;
   card_top[1]++;
   card_top[2]++;
@@ -494,7 +496,6 @@ static void deal(){
   table[3][card_top[3]] = deck[top_card_index+3];
 
   top_card_index += 4;
-
 }
 
 static void restart(){
@@ -504,10 +505,10 @@ static void restart(){
   card_top[3] = -1;
   top_card_index = 0;
   selected = -1;
-
+  won_round = false;
   clear_table();
   shuffle_deck();
-  deal();  
+  deal();
 }
 
 static void load_score(){
@@ -530,28 +531,28 @@ static void save_score(){
 static void window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
-  
+
   layer = layer_create(bounds);
   layer_set_update_proc(layer, layer_update_callback);
   layer_add_child(window_layer, layer);
-    
+
   //Load images
   load_images();
-  
-  //Update times won    
+
+  //Update times won
   load_score();
-  
+
   card_top[0] = -1;
   card_top[1] = -1;
   card_top[2] = -1;
   card_top[3] = -1;
-  
+
   selected = -1;
 
   clear_table();
   shuffle_deck();
   deal();
-   
+
   /*USED FOR TESTING
   top_card_index = 52;
   card_top[0] = 1;
@@ -582,11 +583,11 @@ static void window_unload(Window *window) {
 
 static void init(void) {
   srand(time(NULL));
-   
+
   window = window_create();
   window_set_click_config_provider(window, click_config_provider);
   window_set_window_handlers(window, (WindowHandlers) {
-	.load = window_load,
+	  .load = window_load,
     .unload = window_unload,
   });
   const bool animated = true;
