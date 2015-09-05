@@ -292,10 +292,10 @@ static void layer_update_callback(Layer* this_layer, GContext* ctx){
   int card_width = 32;
   int card_height = 48;
   int card_1_xpos = 5;
-  int card_1_ypos = 78;
+  int card_1_ypos = 70;
   int card_space = 2;
   int deck_xpos = 5;
-  int deck_ypos = 15;
+  int deck_ypos = 11;
 
   //Draw background
   #ifdef PBL_COLOR
@@ -315,13 +315,13 @@ static void layer_update_callback(Layer* this_layer, GContext* ctx){
     #elif PBL_BW
       graphics_context_set_text_color(ctx, GColorBlack);
     #endif
-    graphics_draw_text(ctx, "RESTART" , fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD), GRect(0,deck_ypos-5,60,card_height), GTextOverflowModeWordWrap, GTextAlignmentLeft, NULL);
+    graphics_draw_text(ctx, "Restart" , fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD), GRect(0,deck_ypos-5,60,card_height), GTextOverflowModeWordWrap, GTextAlignmentLeft, NULL);
   }
 
   //Draw cards
   int i;
   int k;
-  int y_space = 10;
+  int y_space = 16;
   for(i = 0; i < 4; ++i){
     if(card_top[i] == -1){
       graphics_fill_rect(ctx, GRect(card_1_xpos + i*(card_width + card_space), card_1_ypos, card_width, card_height), 0, GCornerNone);
@@ -330,7 +330,7 @@ static void layer_update_callback(Layer* this_layer, GContext* ctx){
       int cnt = 0;
       int max_cards;
       #ifdef PBL_COLOR
-        max_cards = 4;
+        max_cards = 3;
       #elif PBL_BW
         max_cards = 2;
       #endif
@@ -344,26 +344,26 @@ static void layer_update_callback(Layer* this_layer, GContext* ctx){
   //Draw pointer
   switch(pointer){
     case DECK :
-      graphics_draw_bitmap_in_rect(ctx, pointer_image, GRect(deck_xpos+10, deck_ypos-11, 12, 10));
+      graphics_draw_bitmap_in_rect(ctx, pointer_image, GRect(deck_xpos+10, deck_ypos-10, 12, 10));
       break;
     case CARD_1 :
-      graphics_draw_bitmap_in_rect(ctx, pointer_image, GRect(card_1_xpos+10, card_1_ypos-11, 12, 10));
+      graphics_draw_bitmap_in_rect(ctx, pointer_image, GRect(card_1_xpos+10, card_1_ypos-10, 12, 10));
       break;
     case CARD_2 :
-      graphics_draw_bitmap_in_rect(ctx, pointer_image, GRect(card_1_xpos + (card_width + card_space)+10, card_1_ypos-11, 12, 10));
+      graphics_draw_bitmap_in_rect(ctx, pointer_image, GRect(card_1_xpos + (card_width + card_space)+10, card_1_ypos-10, 12, 10));
       break;
     case CARD_3 :
-      graphics_draw_bitmap_in_rect(ctx, pointer_image, GRect(card_1_xpos + 2*(card_width + card_space)+10, card_1_ypos-11, 12, 10));
+      graphics_draw_bitmap_in_rect(ctx, pointer_image, GRect(card_1_xpos + 2*(card_width + card_space)+10, card_1_ypos-10, 12, 10));
       break;
     case CARD_4 :
-      graphics_draw_bitmap_in_rect(ctx, pointer_image, GRect(card_1_xpos + 3*(card_width + card_space)+10, card_1_ypos-11, 12, 10));
+      graphics_draw_bitmap_in_rect(ctx, pointer_image, GRect(card_1_xpos + 3*(card_width + card_space)+10, card_1_ypos-10, 12, 10));
       break;
   }
   //Draw select marker
   if (selected != -1){
-    graphics_draw_bitmap_in_rect(ctx, pointer_image, GRect(card_1_xpos + selected*(card_width + card_space)-2, card_1_ypos-11, 12, 10));
-    graphics_draw_bitmap_in_rect(ctx, pointer_image, GRect(card_1_xpos + selected*(card_width + card_space)+10, card_1_ypos-11, 12, 10));
-    graphics_draw_bitmap_in_rect(ctx, pointer_image, GRect(card_1_xpos + selected*(card_width + card_space)+22, card_1_ypos-11, 12, 10));
+    graphics_draw_bitmap_in_rect(ctx, pointer_image, GRect(card_1_xpos + selected*(card_width + card_space)-2, card_1_ypos-10, 12, 10));
+    graphics_draw_bitmap_in_rect(ctx, pointer_image, GRect(card_1_xpos + selected*(card_width + card_space)+10, card_1_ypos-10, 12, 10));
+    graphics_draw_bitmap_in_rect(ctx, pointer_image, GRect(card_1_xpos + selected*(card_width + card_space)+22, card_1_ypos-10, 12, 10));
   }
 
   //Draw score
@@ -373,14 +373,14 @@ static void layer_update_callback(Layer* this_layer, GContext* ctx){
   char high_score_str[20];
   cards_left = 4 + card_top[0]+card_top[1]+card_top[2]+card_top[3]+(52-top_card_index);
   snprintf(cards_left_str, 20, "Cards left: %i", cards_left);
-  graphics_draw_text(ctx, cards_left_str, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD), (GRect) {.origin = {0, 0}, .size={144,14}}, GTextOverflowModeWordWrap, GTextAlignmentRight, NULL);
+  graphics_draw_text(ctx, cards_left_str, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD), (GRect) {.origin = {0, 0}, .size={140,14}}, GTextOverflowModeWordWrap, GTextAlignmentRight, NULL);
   if (won_once){
     snprintf(high_score_str, 20, "Times won: %i", high_score);
   }
   else{
     snprintf(high_score_str, 20, "Best round: %i", high_score);
   }
-  graphics_draw_text(ctx, high_score_str, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD), (GRect) {.origin = {0, 20}, .size={144,14}}, GTextOverflowModeWordWrap, GTextAlignmentRight, NULL);
+  graphics_draw_text(ctx, high_score_str, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD), (GRect) {.origin = {0, 20}, .size={140,14}}, GTextOverflowModeWordWrap, GTextAlignmentRight, NULL);
 
   //Win message
   if (won_round){
