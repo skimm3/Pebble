@@ -195,6 +195,16 @@ static void check_win_condition(){
   }
 }
 
+static void long_select_click_handler(ClickRecognizerRef recognizer, void *context) {
+  if (top_card_index != 52) {
+    deal();
+  } else {
+    restart();
+  }
+  check_win_condition();
+  layer_mark_dirty(layer);
+}
+
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   if(pointer == DECK){
     if (top_card_index != 52){
@@ -258,6 +268,7 @@ static void click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler);
   window_single_click_subscribe(BUTTON_ID_UP, up_click_handler);
   window_single_click_subscribe(BUTTON_ID_DOWN, down_click_handler);
+  window_long_click_subscribe(BUTTON_ID_SELECT, 1000, long_select_click_handler, NULL);
 }
 
 static GBitmap* card_image_from_index(int card_index){
