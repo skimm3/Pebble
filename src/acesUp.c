@@ -299,9 +299,11 @@ static void layer_update_callback(Layer* this_layer, GContext* ctx){
 
   //Draw background
   #ifdef PBL_COLOR
-      graphics_context_set_fill_color(ctx, GColorIslamicGreen);
+    graphics_context_set_compositing_mode(ctx, GCompOpSet);
+    graphics_context_set_fill_color(ctx, GColorIslamicGreen);
   #elif PBL_BW
-      graphics_context_set_fill_color(ctx, GColorWhite);
+    graphics_context_set_compositing_mode(ctx, GCompOpAssign);
+    graphics_context_set_fill_color(ctx, GColorWhite);
   #endif
   graphics_fill_rect(ctx, (GRect) { .origin = { 0, 0 }, .size = { 144, 168 }}, 0, GCornerNone);
 
