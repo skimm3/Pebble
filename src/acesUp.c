@@ -4,8 +4,12 @@ static Window *window;
 static TextLayer *text_layer;
 static Layer* layer;
 
-const uint32_t HIGH_SCORE_KEY = 1335;
-const uint32_t WON_ONCE_KEY = 1336;
+#define HIGH_SCORE_KEY     1335
+#define WON_ONCE_KEY       1336
+#define DECK_KEY           1337
+#define TABLE_KEY          1338
+#define TOP_CARD_INDEX_KEY 1339
+#define CARD_TOP_KEY       1340
 
 static GBitmap *spades_image[13];
 static GBitmap *clubs_image[13];
@@ -28,15 +32,15 @@ Value = number%13
 
 */
 
-int deck[52];
-int table[4][13];
-int top_card_index = 0;
-int card_top[4];
-int selected;
+int8_t deck[52];
+int8_t table[4][13];
+int8_t top_card_index = 0;
+int8_t card_top[4];
+int8_t selected;
 int high_score = 52;
 bool won_round = false;
 bool won_once = false;
-
+bool game_restored = false;
 
 typedef enum {DECK, CARD_1, CARD_2, CARD_3, CARD_4} pointer_location;
 pointer_location pointer = CARD_1;
@@ -525,20 +529,44 @@ static void restart(){
 }
 
 static void load_score(){
+  int game_data_loaded = 0;
+
   high_score = 52;
   won_once = false;
 
   if (persist_exists(HIGH_SCORE_KEY)) {
-   high_score = persist_read_int(HIGH_SCORE_KEY);
+    high_score = persist_read_int(HIGH_SCORE_KEY);
   }
   if (persist_exists(WON_ONCE_KEY)){
     won_once = persist_read_int(WON_ONCE_KEY);
   }
+  if (persist_exists(DECK_KEY)) {
+    persist_read_data(DECK_KEY, deck, sizeof deck);
+    game_data_loaded++;
+  }
+  if (persist_exists(TABLE_KEY)) {
+    persist_read_data(TABLE_KEY, table, sizeof table);
+    game_data_loaded++;
+  }
+  if (persist_exists(TOP_CARD_INDEX_KEY)) {
+    persist_read_data(TOP_CARD_INDEX_KEY, &top_card_index, sizeof top_card_index);
+    game_data_loaded++;
+  }
+  if (persist_exists(CARD_TOP_KEY)) {
+    persist_read_data(CARD_TOP_KEY, card_top, sizeof card_top);
+    game_data_loaded++;
+  }
+  
+  game_restored = (game_data_loaded == 4);
 }
 
 static void save_score(){
   persist_write_int(HIGH_SCORE_KEY, high_score);
   persist_write_int(WON_ONCE_KEY, won_once);
+  persist_write_data(DECK_KEY, deck, sizeof deck);
+  persist_write_data(TABLE_KEY, table, sizeof table);
+  persist_write_data(TOP_CARD_INDEX_KEY, &top_card_index, sizeof top_card_index);
+  persist_write_data(CARD_TOP_KEY, card_top, sizeof card_top);
 }
 
 static void window_load(Window *window) {
@@ -555,17 +583,18 @@ static void window_load(Window *window) {
   //Update times won
   load_score();
 
-  card_top[0] = -1;
-  card_top[1] = -1;
-  card_top[2] = -1;
-  card_top[3] = -1;
-
   selected = -1;
-
-  clear_table();
-  shuffle_deck();
-  deal();
-
+  if (!game_restored) {
+    card_top[0] = -1;
+    card_top[1] = -1;
+    card_top[2] = -1;
+    card_top[3] = -1;
+    
+    clear_table();
+    shuffle_deck();
+    deal();
+  }
+  
   /*USED FOR TESTING
   top_card_index = 52;
   card_top[0] = 1;
